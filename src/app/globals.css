@@ -1,8 +1,10 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background: #fafafa;
   --foreground: #171717;
+  --accent: #0d9488;
+  --accent-muted: rgba(13, 148, 136, 0.12);
 }
 
 @theme inline {
@@ -14,13 +16,51 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #09090b;
     --foreground: #ededed;
+    --accent: #2dd4bf;
+    --accent-muted: rgba(45, 212, 191, 0.15);
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+@keyframes interview-metric-row-bump {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes interview-metric-bar-pop {
+  0%,
+  100% {
+    transform: scaleX(1);
+  }
+  45% {
+    transform: scaleX(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-interview-metric-row,
+  .animate-interview-metric-bar {
+    animation: none !important;
+  }
+}
+
+.animate-interview-metric-row {
+  animation: interview-metric-row-bump 0.45s ease-out;
+}
+
+.animate-interview-metric-bar {
+  animation: interview-metric-bar-pop 0.45s ease-out;
+  transform-origin: left center;
 }
