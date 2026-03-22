@@ -37,6 +37,27 @@ function getRecognitionCtor(): (new () => SpeechRecognitionLike) | null {
   return w.SpeechRecognition ?? w.webkitSpeechRecognition ?? null;
 }
 
+/** Maps SpeechRecognitionError codes to helpful copy (browser emits short codes like "network"). */
+function messageForSpeechError(code: string): string | null {
+  switch (code) {
+    case "aborted":
+      return null;
+    case "no-speech":
+      return null;
+    case "not-allowed":
+    case "service-not-allowed":
+      return "Microphone permission denied. Allow access to use voice input.";
+    case "network":
+      return "Voice recognition couldn’t reach the speech service. In Chrome and Edge, speech is processed online—check your internet connection, VPN, or firewall, then try again.";
+    case "audio-capture":
+      return "No microphone was found or it’s in use by another app.";
+    case "language-not-supported":
+      return "This language isn’t supported for voice input. Try switching your browser language.";
+    default:
+      return `Voice input error: ${code}`;
+  }
+}
+
 export interface UseSpeechToTextOptions {
   value: string;
   onChange: (next: string) => void;
@@ -124,14 +145,9 @@ export function useSpeechToText({
 
     recognition.onerror = (event: SpeechRecognitionErrorEventLike) => {
       const code = event.error;
-      if (code === "not-allowed" || code === "service-not-allowed") {
-        setSpeechError(
-          "Microphone permission denied. Allow access to use voice input.",
-        );
-      } else if (code === "no-speech") {
-        /* ignore — user may pause */
-      } else if (code !== "aborted") {
-        setSpeechError(`Voice input error: ${code}`);
+      const msg = messageForSpeechError(code);
+      if (msg) {
+        setSpeechError(msg);
       }
       recognitionRef.current = null;
       setIsRecording(false);
