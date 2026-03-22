@@ -199,6 +199,4 @@ Chrome/Edge often use **online** speech recognition; a **network** error usually
 
 ---
 
-## License
 
-Private / hackathon use unless otherwise specified by the repository owner.
